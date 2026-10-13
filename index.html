@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم Reson Downloader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-6">
+        <div class="text-center">
+            <h1 class="text-2xl font-bold text-blue-400">لوحة تحكم حالة التطبيق</h1>
+            <p class="text-slate-400 text-sm mt-1">التحكم في الصيانة، التحديثات، وحالة الطوارئ للتطبيق</p>
+        </div>
+
+        <div class="space-y-4">
+            <!-- حالة المشكلة العامة -->
+            <div class="flex items-center justify-between bg-slate-900/50 p-4 rounded-xl border border-slate-700">
+                <span class="font-medium">هل توجد مشكلة/صيانة عامة؟</span>
+                <input type="checkbox" id="isThereProblem" class="w-6 h-6 accent-blue-500 cursor-pointer">
+            </div>
+
+            <!-- نوع المشكلة -->
+            <div class="space-y-1">
+                <label class="text-sm font-medium text-slate-300">نوع المشكلة / الواجهة:</label>
+                <select id="problemType" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+                    <option value="maintenance">صيانة (Maintenance)</option>
+                    <option value="update">تحديث إجباري (Update)</option>
+                    <option value="banned">حظر المستخدم (Banned)</option>
+                    <option value="country_restricted">محظور في البلد (Country Restricted)</option>
+                    <option value="discontinued">إيقاف نهائي (Discontinued)</option>
+                </select>
+            </div>
+
+            <!-- وقت انتهاء الصيانة -->
+            <div class="space-y-1">
+                <label class="text-sm font-medium text-slate-300">وقت انتهاء الصيانة (اختياري):</label>
+                <input type="datetime-local" id="maintenanceEndTime" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+            </div>
+
+            <!-- رابط التحديث -->
+            <div class="space-y-1">
+                <label class="text-sm font-medium text-slate-300">رابط التحديث الجديد (Google Play):</label>
+                <input type="text" id="updateUrl" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500" placeholder="https://play.google.com/...">
+            </div>
+
+            <!-- رابط الدعم -->
+            <div class="space-y-1">
+                <label class="text-sm font-medium text-slate-300">رابط الدعم الفني (WhatsApp أو موقع):</label>
+                <input type="text" id="supportUrl" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500" placeholder="https://wa.me/...">
+            </div>
+
+            <!-- زر الحفظ -->
+            <button onclick="saveConfig()" id="saveBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg">
+                حفظ التحديثات في السيرفر
+            </button>
+            <p id="statusMsg" class="text-center text-sm font-medium"></p>
+        </div>
+    </div>
+
+    <!-- ربط Firebase SDK (V8 أو V10 جافا سكريبت) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // ضع بيانات مشروعك هنا (تجدها في إعدادات مشروع فايربيس)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // جلب البيانات الحالية عند فتح الصفحة
+        async function loadConfig() {
+            try {
+                const docRef = doc(db, "app_settings", "config");
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('isThereProblem').checked = data.isthere_problem || false;
+                    document.getElementById('problemType').value = data.problem_type || 'maintenance';
+                    document.getElementById('updateUrl').value = data.update_url || '';
+                    document.getElementById('supportUrl').value = data.support_url || '';
+                    
+                    if (data.maintenance_end_time) {
+                        const date = data.maintenance_end_time.toDate();
+                        document.getElementById('maintenanceEndTime').value = date.toISOString().slice(0, 16);
+                    }
+                }
+            } catch (e) {
+                console.error("خطأ في جلب البيانات: ", e);
+            }
+        }
+
+        loadConfig();
+
+        // دالة حفظ البيانات وإرسالها لفايرستور
+        window.saveConfig = async function() {
+            const btn = document.getElementById('saveBtn');
+            const msg = document.getElementById('statusMsg');
+            btn.disabled = true;
+            btn.textContent = "جاري الحفظ...";
+            msg.textContent = "";
+
+            try {
+                const isThereProblem = document.getElementById('isThereProblem').checked;
+                const problemType = document.getElementById('problemType').value;
+                const updateUrl = document.getElementById('updateUrl').value;
+                const supportUrl = document.getElementById('supportUrl').value;
+                const timeVal = document.getElementById('maintenanceEndTime').value;
+
+                const payload = {
+                    isthere_problem: isThereProblem,
+                    problem_type: problemType,
+                    update_url: updateUrl,
+                    support_url: supportUrl,
+                    maintenance_end_time: timeVal ? new Date(timeVal) : new Date()
+                };
+
+                await setDoc(doc(db, "app_settings", "config"), payload, { merge: true });
+                
+                msg.textContent = "تم الحفظ بنجاح وتحديث حالة التطبيق!";
+                msg.className = "text-center text-sm font-medium text-green-400";
+            } catch (e) {
+                msg.textContent = "حدث خطأ أثناء الحفظ: " + e.message;
+                msg.className = "text-center text-sm font-medium text-red-400";
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "حفظ التحديثات في السيرفر";
+            }
+        }
+    </script>
+</body>
+</html>
