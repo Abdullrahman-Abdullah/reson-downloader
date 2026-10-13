@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="128x128" href="icons/logo.png">
+
+    <title>Reson Downloader | ريسون داونلودر</title>
+    
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- AOS Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        body::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            background-color: #f5f5f500;
+            overflow-x: auto;
+        }
+
+        body::-webkit-scrollbar {
+            width: 6px;
+            height: 3px;
+            background-color: #f5f5f500;
+            overflow-x: auto;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+            background-color: #f8b4d9;
+            overflow-x: auto;
+        }
+
+        /* الوضع الداكن (افتراضي) */
+        body.dark-mode {
+            background: #0a0a0a;
+            color: #ffffff;
+        }
+
+        /* الوضع الفاتح */
+        body.light-mode {
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+
+        /* الوضع الوردي */
+        body.pink-mode {
+            background: #fff0f5;
+            color: #2a0813;
+        }
+
+        /* خلفية محسنة للوضع الداكن */
+        body.dark-mode .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.1) 0%, transparent 35%),
+                radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+                #0a0a0a;
+            animation: bgPulse 10s ease-in-out infinite alternate;
+        }
+
+        /* خلفية محسنة للوضع الفاتح */
+        body.light-mode .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.05) 0%, transparent 35%),
+                radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 40%),
+                #f0f0f0;
+            animation: bgPulseLight 12s ease-in-out infinite alternate;
+        }
+
+        /* خلفية محسنة للوضع الوردي */
+        body.pink-mode .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.3) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(255, 192, 203, 0.25) 0%, transparent 35%),
+                radial-gradient(circle at 40% 80%, rgba(255, 228, 225, 0.3) 0%, transparent 40%),
+                #fff0f5;
+            animation: bgPulsePink 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        @keyframes bgPulseLight {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 0.8; transform: scale(1.03); }
+        }
+
+        @keyframes bgPulsePink {
+            0% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 0.9; transform: scale(1.04); }
+        }
+
+        /* شبكة متحركة للخلفية */
+        .bg-animated::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 20px),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 20px);
+            animation: moveGrid 30s linear infinite;
+        }
+
+        body.light-mode .bg-animated::before {
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 20px),
+                repeating-linear-gradient(90deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 20px);
+        }
+
+        body.pink-mode .bg-animated::before {
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(255,105,180,0.05) 0px, rgba(255,105,180,0.05) 1px, transparent 1px, transparent 20px),
+                repeating-linear-gradient(90deg, rgba(255,105,180,0.05) 0px, rgba(255,105,180,0.05) 1px, transparent 1px, transparent 20px);
+        }
+
+        @keyframes moveGrid {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(30px) translateY(30px); }
+        }
+
+        /* جزيئات متحركة */
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            animation: particleFloat 15s linear infinite;
+        }
+
+        body.dark-mode .particle {
+            background: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        body.light-mode .particle {
+            background: rgba(0,0,0,0.2);
+            box-shadow: 0 0 8px rgba(0,0,0,0.2);
+        }
+
+        body.pink-mode .particle {
+            background: rgba(255, 105, 180, 0.5);
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.4);
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) scale(1); opacity: 0.8; }
+            100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+        }
+
+        /* كارت - يتغير مع الوضع */
+        .modern-card {
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .modern-card {
+            background: rgba(20, 20, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        body.light-mode .modern-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        body.pink-mode .modern-card {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.1);
+        }
+
+        .modern-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .modern-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        body.dark-mode .modern-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 30px 40px -20px rgba(0,0,0,0.8);
+        }
+
+        body.light-mode .modern-card:hover {
+            border-color: rgba(0,0,0,0.2);
+            box-shadow: 0 30px 40px -20px rgba(0,0,0,0.2);
+        }
+
+        body.pink-mode .modern-card:hover {
+            border-color: rgba(255, 105, 180, 0.5);
+            box-shadow: 0 30px 40px -20px rgba(255, 105, 180, 0.3);
+        }
+
+        .modern-card:hover::before {
+            left: 100%;
+        }
+
+        /* زر التبديل بين الأوضاع */
+        .theme-toggle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .theme-toggle {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+        }
+
+        body.light-mode .theme-toggle {
+            background: rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.1);
+            color: #1a1a1a;
+        }
+
+        body.pink-mode .theme-toggle {
+            background: rgba(255, 105, 180, 0.15);
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            color: #e91e63;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(30deg) scale(1.1);
+        }
+
+        body.dark-mode .theme-toggle:hover {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        body.light-mode .theme-toggle:hover {
+            background: rgba(0,0,0,0.1);
+        }
+
+        body.pink-mode .theme-toggle:hover {
+            background: rgba(255, 105, 180, 0.3);
+        }
+
+        /* زر نيون - يتكيف مع الوضع */
+        .neon-button {
+            background: transparent;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            z-index: 1;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        body.dark-mode .neon-button {
+            color: white;
+            border: 2px solid rgba(59, 130, 246, 0.5);
+        }
+
+        body.light-mode .neon-button {
+            color: #1a1a1a;
+            border: 2px solid rgba(0,0,0,0.2);
+        }
+
+        body.pink-mode .neon-button {
+            color: #e91e63;
+            border: 2px solid rgba(255, 105, 180, 0.5);
+        }
+
+        .neon-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            transition: width 0.4s ease;
+            z-index: -1;
+        }
+
+        body.dark-mode .neon-button::before {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+
+        body.light-mode .neon-button::before {
+            background: #1a1a1a;
+        }
+
+        body.pink-mode .neon-button::before {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+        }
+
+        body.dark-mode .neon-button:hover {
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        body.light-mode .neon-button:hover {
+            color: white;
+            border-color: #1a1a1a;
+        }
+
+        body.pink-mode .neon-button:hover {
+            color: white;
+            border-color: #ff69b4;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .neon-button:hover::before {
+            width: 100%;
+        }
+
+        /* زر Soon - معطل */
+        .neon-button.soon {
+            opacity: 0.7;
+            cursor: not-allowed;
+            position: relative;
+            padding-top: 18px;
+        }
+
+        .neon-button.soon:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .neon-button.soon:hover::before {
+            width: 0%;
+        }
+
+        .soon-badge {
+            height: 110%;
+            width: 20%;
+            align-items: center;
+            align-items: center;
+            
+            position: absolute;
+            padding-top:17px;
+            top: 0px;
+            right: 0px;
+            background: linear-gradient(135deg, #25D36611, #25D36611);
+            color: #fff;
+            font-size: 0.80rem;
+            font-weight: 900;
+            /* padding: 3px 12px; */
+            border-radius: 20px;
+            z-index: 10;
+            letter-spacing: 1px;
+            
+            animation: pulseSoon 1.5s ease-in-out infinite;
+            text-transform: uppercase;
+        }
+
+        @keyframes pulseSoon {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        /* زر واتساب */
+        .whatsapp-btn {
+            background: transparent;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            z-index: 1;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        body.dark-mode .whatsapp-btn {
+            color: #25D366;
+            border: 2px solid rgba(37, 211, 102, 0.5);
+        }
+
+        body.light-mode .whatsapp-btn {
+            color: #128C7E;
+            border: 2px solid rgba(18, 140, 126, 0.3);
+        }
+
+        body.pink-mode .whatsapp-btn {
+            color: #25D366;
+            border: 2px solid rgba(37, 211, 102, 0.5);
+        }
+
+        .whatsapp-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            transition: width 0.4s ease;
+            z-index: -1;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+
+        .whatsapp-btn:hover {
+            color: white !important;
+            border-color: #25D366 !important;
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-btn:hover::before {
+            width: 100%;
+        }
+
+        /* عنوان نيون - يتكيف */
+        .neon-title {
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            text-transform: uppercase;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+        }
+
+        body.dark-mode .neon-title {
+            background: linear-gradient(135deg, #ffffff 0%, #3b82f6 50%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.light-mode .neon-title {
+            background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 50%, #1a1a1a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.pink-mode .neon-title {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #ff69b4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* نص الوضع الفاتح */
+        body.light-mode .text-gray-400 {
+            color: #4a4a4a;
+        }
+
+        body.light-mode .text-gray-300 {
+            color: #3a3a3a;
+        }
+
+        body.light-mode .border-white\/10 {
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        body.light-mode .bg-white\/10 {
+            background: rgba(0,0,0,0.05);
+        }
+
+        body.light-mode .text-white {
+            color: #1a1a1a;
+        }
+
+        body.light-mode .text-gray-500 {
+            color: #6b6b6b;
+        }
+
+        body.light-mode .text-gray-600 {
+            color: #5a5a5a;
+        }
+
+        /* نص الوضع الوردي */
+        body.pink-mode .text-gray-400 {
+            color: #8b3a5e;
+        }
+
+        body.pink-mode .text-gray-300 {
+            color: #7a2e52;
+        }
+
+        body.pink-mode .border-white\/10 {
+            border-color: rgba(255, 105, 180, 0.2);
+        }
+
+        body.pink-mode .bg-white\/10 {
+            background: rgba(255, 105, 180, 0.1);
+        }
+
+        body.pink-mode .text-white {
+            color: #2a0813;
+        }
+
+        body.pink-mode .text-gray-500 {
+            color: #9b4a6e;
+        }
+
+        body.pink-mode .text-gray-600 {
+            color: #8b3a5e;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* أيقونات متحركة */
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* خطوط متحركة */
+        .animated-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, currentColor, transparent);
+            width: 100%;
+            animation: slideLine 2s ease-in-out infinite;
+        }
+
+        body.dark-mode .animated-line {
+            color: #3b82f6;
+        }
+
+        body.light-mode .animated-line {
+            color: #1a1a1a;
+        }
+
+        body.pink-mode .animated-line {
+            color: #ff69b4;
+        }
+
+        @keyframes slideLine {
+            0% { transform: scaleX(0); opacity: 0; }
+            50% { transform: scaleX(1); opacity: 1; }
+            100% { transform: scaleX(0); opacity: 0; }
+        }
+
+        /* أيقونات مميزة */
+        .icon-glow {
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .icon-glow {
+            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
+        }
+
+        body.light-mode .icon-glow {
+            filter: drop-shadow(0 0 8px rgba(0,0,0,0.2));
+        }
+
+        body.pink-mode .icon-glow {
+            filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.5));
+        }
+
+        .icon-glow:hover {
+            transform: scale(1.1);
+        }
+
+        body.dark-mode .icon-glow:hover {
+            filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.8));
+        }
+
+        body.light-mode .icon-glow:hover {
+            filter: drop-shadow(0 0 15px rgba(0,0,0,0.3));
+        }
+
+        body.pink-mode .icon-glow:hover {
+            filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.8));
+        }
+
+        /* قسم المميزات */
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .feature-icon {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        body.light-mode .feature-icon {
+            background: rgba(0,0,0,0.05);
+            color: #1a1a1a;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        body.pink-mode .feature-icon {
+            background: rgba(255, 105, 180, 0.15);
+            color: #e91e63;
+            border: 1px solid rgba(255, 105, 180, 0.2);
+        }
+
+        /* شريط التحميل التوضيحي */
+        .progress-bar {
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body.dark-mode .progress-bar {
+            background: rgba(255,255,255,0.1);
+        }
+
+        body.light-mode .progress-bar {
+            background: rgba(0,0,0,0.1);
+        }
+
+        body.pink-mode .progress-bar {
+            background: rgba(255, 105, 180, 0.15);
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            animation: progressAnim 2s ease-in-out infinite;
+        }
+
+        body.dark-mode .progress-fill {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        }
+
+        body.light-mode .progress-fill {
+            background: linear-gradient(90deg, #1a1a1a, #4a4a4a);
+        }
+
+        body.pink-mode .progress-fill {
+            background: linear-gradient(90deg, #ff69b4, #ff1493);
+        }
+
+        @keyframes progressAnim {
+            0% { width: 10%; }
+            50% { width: 85%; }
+            100% { width: 10%; }
+        }
+
+        /* أزرار التحميل - موحدة الحجم */
+        .download-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .download-buttons .neon-button,
+        .download-buttons .whatsapp-btn {
+            flex: 1 1 auto;
+            min-width: 160px;
+            padding: 14px 24px;
+            font-size: 0.95rem;
+        }
+
+        @media screen and (max-width: 640px) {
+            #mediamt {
+                margin-top: 100px;
+            }
+            .neon-title {
+                font-size: 3rem;
+            }
+            .download-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            .download-buttons .neon-button,
+            .download-buttons .whatsapp-btn {
+                width: 100%;
+                min-width: unset;
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <!-- خلفية متحركة محسنة -->
+    <div class="bg-animated"></div>
+    
+    <!-- جزيئات متحركة -->
+    <div id="particles"></div>
+
+    <!-- الهيدر -->
+    <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="text-2xl font-bold" data-aos="fade-left">
+                    <span class="text-inherit">◈</span>
+                    <span class="text-inherit mx-2">Reson</span>
+                    <span class="text-gray-500">Downloader</span>
+                </div>
+
+                <!-- Theme Toggle -->
+                <div class="flex items-center gap-4">
+                    <div class="theme-toggle" onclick="cycleTheme()" id="themeToggle">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div id="mediamt" class="container mx-auto px-6 mt-14">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div data-aos="fade-up" data-aos-duration="1000">
+                    <div class="inline-block px-4 py-2 bg-white/10 rounded-full text-sm mb-8 backdrop-blur-sm border border-white/20">
+                        <i class="fas fa-bolt ml-2 text-yellow-500"></i>
+                        تحميل فائق السرعة
+                    </div>
+                    
+                    <h1 class="neon-title mb-6">
+                        Reson<br>
+                    </h1>
+                    
+                    <p class="text-xl text-gray-400 mb-8 leading-relaxed" data-aos="fade-up" data-aos-delay="200">
+                        حمّل ملفاتك بسرعة خارقة عبر عدة اتصالات متزامنة في نفس الوقت. وداعاً للانتظار الطويل.
+                    </p>
+                    
+                    <!-- أزرار التحميل - موحدة -->
+                    <div class="download-buttons" data-aos="fade-up" data-aos-delay="400">
+                        <button class="neon-button" id="downloadBTNAND">
+                            <i class="fab fa-google-play ml-2"></i>
+                            تحميل اندرويد
+                        </button>
+                        <button class="neon-button soon" disabled>
+                            <span class="soon-badge">قريباً</span>
+                            <i class="fab fa-windows ml-2"></i>
+                            تحميل ويندوز
+                        </button>
+                        <a href="https://wa.me/qr/Q4SZQJ3PHZ22L1" target="_blank" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp ml-2"></i>
+                            واتساب
+                        </a>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="flex gap-8 mt-12" data-aos="fade-up" data-aos-delay="10">
+                        <div>
+                            <div class="text-3xl font-bold">8x</div>
+                            <div class="text-gray-400">اتصالات متزامنة</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold">10x</div>
+                            <div class="text-gray-400">أسرع من المعتاد</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold">4.9</div>
+                            <div class="text-gray-400">تقييمات</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3D Element - Download Visualization -->
+                <div class="relative" data-aos="fade-left" data-aos-duration="1000">
+                    <div class="relative z-10">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-4">
+                                <div class="modern-card p-8 text-center floating-icon">
+                                    <i class="fas fa-bolt text-3xl mb-2 icon-glow"></i>
+                                    <i class="fas fa-rocket text-3xl mb-2 icon-glow"></i>
+                                    <h3 class="font-bold">سرعة فائقة</h3>
+                                </div>
+                                <div class="modern-card p-8 text-center floating-icon" style="animation-delay: 0.5s">
+                                    <i class="fas fa-layer-group text-3xl mb-4 icon-glow"></i>
+                                    <i class="fas fa-code-branch text-3xl mb-4 icon-glow"></i>
+                                    <h3 class="font-bold">تقسيم ذكي</h3>
+                                </div>
+                            </div>
+                            <div class="space-y-4 mt-8">
+                                <div class="modern-card p-8 text-center floating-icon" style="animation-delay: 1s">
+                                    <i class="fas fa-shield-alt text-3xl mb-2 icon-glow"></i>
+                                    <i class="fas fa-lock text-3xl mb-2 icon-glow"></i>
+                                    <h3 class="font-bold">آمن ومشفر</h3>
+                                </div>
+                                <div class="modern-card p-8 text-center floating-icon" style="animation-delay: 1.5s">
+                                    <i class="fas fa-pause-circle text-3xl mb-2 icon-glow"></i>
+                                    <i class="fas fa-play-circle text-3xl mb-2 icon-glow"></i>
+                                    <h3 class="font-bold">استئناف ذكي</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-24 relative" id="features">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4">لماذا Reson Downloader؟</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">اكتشف المميزات التي تجعلنا الخيار الأول لتحميل الملفات بسرعة فائقة</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="modern-card p-8" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon mb-6">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">تحميل متعدد الاتصالات</h3>
+                    <p class="text-gray-400 leading-relaxed">يقوم التطبيق بتقسيم الملف إلى أجزاء وتحميلها عبر 8 اتصالات متزامنة في نفس الوقت للحصول على أقصى سرعة ممكنة.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="modern-card p-8" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon mb-6">
+                        <i class="fas fa-pause-circle"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">إيقاف واستئناف</h3>
+                    <p class="text-gray-400 leading-relaxed">يمكنك إيقاف التحميل واستئنافه في أي وقت دون فقدان التقدم. حتى بعد إغلاق التطبيق، يستأنف التحميل من حيث توقف.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="modern-card p-8" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon mb-6">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">إشعارات ذكية</h3>
+                    <p class="text-gray-400 leading-relaxed">تحكم كامل من شريط الإشعارات. إيقاف، استئناف، ومتابعة التقدم دون فتح التطبيق.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="modern-card p-8" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon mb-6">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">ثلاثة أوضاع للألوان</h3>
+                    <p class="text-gray-400 leading-relaxed">اختر من بين الوضع الداكن، الفاتح، أو الوردي الكيوت. تجربة بصرية مريحة تناسب جميع الأذواق.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="modern-card p-8" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon mb-6">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">آمن ومشفر</h3>
+                    <p class="text-gray-400 leading-relaxed">جميع الاتصالات مشفرة. لا نقوم بتخزين أو مشاركة بياناتك مع أي طرف ثالث.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="modern-card p-8" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon mb-6">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">سجل التحميلات</h3>
+                    <p class="text-gray-400 leading-relaxed">يتم حفظ جميع التحميلات السابقة في سجل منظم يمكنك العودة إليه في أي وقت لإعادة التحميل أو المتابعة.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-24 relative" id="how">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl font-bold mb-4">كيف يعمل؟</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">ثلاث خطوات بسيطة لتحميل أي ملف بسرعة فائقة</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="modern-card p-8 text-center relative" data-aos="fade-up" data-aos-delay="100">
+                    <div class="absolute top-4 left-4 text-6xl font-black opacity-10">1</div>
+                    <div class="feature-icon mx-auto mb-6">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">الصق الرابط</h3>
+                    <p class="text-gray-400 leading-relaxed">انسخ رابط الملف الذي تريد تحميله والصقه في التطبيق.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="modern-card p-8 text-center relative" data-aos="fade-up" data-aos-delay="200">
+                    <div class="absolute top-4 left-4 text-6xl font-black opacity-10">2</div>
+                    <div class="feature-icon mx-auto mb-6">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">اختر الإعدادات</h3>
+                    <p class="text-gray-400 leading-relaxed">حدد مجلد الحفظ وعدد الاتصالات المتزامنة حسب سرعة الإنترنت لديك.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="modern-card p-8 text-center relative" data-aos="fade-up" data-aos-delay="300">
+                    <div class="absolute top-4 left-4 text-6xl font-black opacity-10">3</div>
+                    <div class="feature-icon mx-auto mb-6">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">حمّل واستمتع</h3>
+                    <p class="text-gray-400 leading-relaxed">اضغط تحميل وشاهد السرعة الخارقة. يمكنك متابعة التقدم من الإشعارات.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Speed Comparison Section -->
+    <section class="py-24 relative">
+        <div class="container mx-auto px-6">
+            <div class="modern-card p-8 md:p-12" data-aos="fade-up">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-4">سرعة لا تقارن</h2>
+                        <p class="text-gray-400 mb-8 leading-relaxed">بينما يستغرق التحميل التقليدي وقتاً طويلاً، يقوم Reson Downloader بتقسيم الملف وتحميله عبر عدة اتصالات في نفس الوقت.</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-bold">التحميل التقليدي</span>
+                                    <span class="text-gray-400">اتصال واحد</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 25%; animation: none; background: #ef4444;"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between mb-2">
+                                    <span class="font-bold">Reson Downloader</span>
+                                    <span class="text-gray-400">8 اتصالات متزامنة</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 95%; animation: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="text-7xl font-black mb-4" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">8x</div>
+                        <p class="text-gray-400">أسرع من التحميل التقليدي</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 relative">
+        <div class="container mx-auto px-6 text-center" data-aos="fade-up">
+            <h2 class="text-4xl font-bold mb-6">جاهز لتجربة التحميل فائق السرعة؟</h2>
+            <p class="text-gray-400 mb-8 max-w-2xl mx-auto">حمّل التطبيق الآن وانضم لآلاف المستخدمين الذين استمتعوا بسرعة التحميل الخارقة</p>
+            <div class="download-buttons" style="justify-content: center; max-width: 700px; margin: 0 auto;">
+                <button class="neon-button" onclick="document.getElementById('downloadBTNAND').click()">
+                    <i class="fab fa-google-play ml-2"></i>
+                    تحميل اندرويد
+                </button>
+                <button class="neon-button soon" disabled>
+                    <span class="soon-badge">قريباً</span>
+                    <i class="fab fa-windows ml-2"></i>
+                    تحميل ويندوز
+                </button>
+                <a href="https://wa.me/qr/Q4SZQJ3PHZ22L1" target="_blank" class="whatsapp-btn">
+                    <i class="fab fa-whatsapp ml-2"></i>
+                    واتساب
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/10">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-2xl font-bold">
+                    <span class="text-inherit">◈</span>
+                    <span class="text-inherit mx-2">Reson</span>
+                    <span class="text-gray-500">Downloader</span>
+                </div>
+                <p class="text-gray-500 text-sm">© 2024 Reson Downloader. جميع الحقوق محفوظة.</p>
+                <div class="flex gap-4">
+                    <a href="https://wa.me/qr/Q4SZQJ3PHZ22L1" class="text-gray-400 hover:text-inherit transition text-xl"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.reddit.com/u/Abdulrahman-Abdullah/s/7ugNTSA9Ou" class="text-gray-400 hover:text-inherit transition text-xl"><i class="fab fa-reddit"></i></a>
+                    <a href="https://instagram.com/abdullrahman.abdulah?utm_source=qr&vrfl=MTY3Y2ducXRieW1rOA==" class="text-gray-400 hover:text-inherit transition text-xl"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // AOS Init
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+
+        // Theme Management
+        const themeModes = ['dark', 'light', 'pink'];
+        let currentThemeIndex = 0;
+
+        function cycleTheme() {
+            currentThemeIndex = (currentThemeIndex + 1) % themeModes.length;
+            const mode = themeModes[currentThemeIndex];
+            
+            document.body.className = mode + '-mode';
+            
+            const icon = document.getElementById('themeIcon');
+            if (mode === 'dark') {
+                icon.className = 'fas fa-moon';
+            } else if (mode === 'light') {
+                icon.className = 'fas fa-sun';
+            } else {
+                icon.className = 'fas fa-heart';
+            }
+            
+            localStorage.setItem('reson-theme', mode);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('reson-theme');
+        if (savedTheme && themeModes.includes(savedTheme)) {
+            currentThemeIndex = themeModes.indexOf(savedTheme);
+            document.body.className = savedTheme + '-mode';
+            const icon = document.getElementById('themeIcon');
+            if (savedTheme === 'dark') icon.className = 'fas fa-moon';
+            else if (savedTheme === 'light') icon.className = 'fas fa-sun';
+            else icon.className = 'fas fa-heart';
+        }
+
+        // Particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const count = 30;
+            
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.width = (Math.random() * 3 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Download button - Android
+        document.getElementById('downloadBTNAND').addEventListener('click', function() {
+            // ضع رابط تحميل الأندرويد هنا
+            window.open('#', '_blank');
+        });
+    </script>
+</body>
+</html>
